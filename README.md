@@ -1,33 +1,28 @@
 # Omicron
 
-Omicron 是一个面向 Android 的独立本地 AI 助手项目。
+Omicron 是面向 Android 手机的本地 AI 助手，目标设备为 iQOO Z9（12 GB RAM / 256 GB 存储）。
 
-## 目标设备
-- iQOO Z9：12 GB RAM / 256 GB 存储
-- Android 原生 Kotlin 应用
-- 中文聊天界面
-- APK 由 GitHub Actions 云端自动构建
+## 当前版本 0.3.0
+- 接入官方 llama.cpp Android 示例中的 JNI 推理库。
+- 支持从手机文件选择器导入 GGUF 文件，并复制到应用私有目录。
+- 支持加载模型、设置中文系统提示词和流式生成回复。
+- 模型推理在设备本地执行，不调用在线 AI API。
+- 当前 APK 仅构建 arm64-v8a，适配目标手机。
 
-## 技术路线
-- 本地推理引擎：llama.cpp Android
-- 模型候选：Qwen2.5-3B-Instruct GGUF，优先测试 Q4_K_M
-- 模型文件由用户通过 Android 文件选择器导入
-- 不依赖在线 AI API；完成引擎接入后支持离线推理
+## 首选模型
+Qwen2.5-3B-Instruct GGUF，优先选择 Q4_K_M 量化版本。模型文件不包含在 APK 中，需要单独下载后导入。建议先从 4096 上下文规模的使用预期开始，避免同时运行大型应用造成内存压力。
 
-## 当前版本 0.2.0
-- 启用 Kotlin Android 插件，确保 Activity 编译进 APK。
-- 增加 GGUF 文件选择、导入和应用私有目录保存。
-- 显示已导入模型的文件名和大小。
-- 当前仍未接入 llama.cpp 推理，不能把导入模型误认为已经能聊天。
+官方模型仓库：
+https://huggingface.co/Qwen/Qwen2.5-3B-Instruct-GGUF
 
-## 模型建议
-Qwen2.5-3B-Instruct GGUF 的 Q4_K_M 文件约 2 GB。模型文件不打包进 APK，需要用户单独下载并导入。首次测试建议从较短上下文开始，避免内存占用过高。
+## 构建方式
+GitHub Actions 云端检出固定版本的官方 llama.cpp 源码，安装 Android NDK 29 与 CMake 3.31.6，构建 Omicron APK。
 
-## 获取 APK
-打开仓库 Actions 页面，进入最新的 Build Omicron APK 工作流，等待成功后在 Artifacts 下载 `Omicron-debug-apk`。
+构建完成后，在 Actions 的 Artifacts 下载 `Omicron-0.3.0-debug-apk`。
 
-## 后续阶段
-1. 完成模型导入和 APK 编译验证。
-2. 集成 llama.cpp Android 推理库。
-3. 实现模型加载、上下文长度设置和逐 token 输出。
-4. 增加聊天记录与本地设置。
+## 技术来源
+- llama.cpp Android 示例与构建说明：https://github.com/ggml-org/llama.cpp/tree/master/examples/llama.android
+- 固定源码提交：7f106b545965d601eb875ec8d2381288ee9b98f9
+
+## 注意
+这是首个推理引擎集成版本。云端构建成功后，仍需在真实 iQOO Z9 上验证模型加载、内存占用、发热和生成速度。模型格式、架构或设备内存不足时可能导致加载失败。
