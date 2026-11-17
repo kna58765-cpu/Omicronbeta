@@ -111,7 +111,7 @@ class MainActivity : Activity() {
         input = EditText(this).apply {
             hint = "输入消息…"
             textSize = 16f
-            singleLine = false
+            setSingleLine(false)
             minLines = 1
             maxLines = 3
             isEnabled = false
